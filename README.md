@@ -1,5 +1,7 @@
 # Aero
 
+[![Build Status](https://travis-ci.com/Trumeet/Aero.svg?branch=master)](https://travis-ci.com/Trumeet/Aero)
+
 It is an demo of enabling Aero on Windows 10 using hidden APIs and it's written in Kotlin Native.
 
 ## Acknowledgements
