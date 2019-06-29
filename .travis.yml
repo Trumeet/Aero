@@ -30,4 +30,4 @@ deploy:
   file:
     - Aero-$VERSION.exe
   on:
-    repo: Trumeet/Desktop
+    repo: Trumeet/Aero
