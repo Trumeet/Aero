@@ -7,13 +7,6 @@ import platform.windows.*
 fun main() {
     SetProcessDPIAware()
     val hInstance = GetModuleHandleA(null)
-    val nCmdShow = memScoped {
-        val startUpInfo = nativeHeap.alloc<_STARTUPINFOA>()
-        GetStartupInfoA(startUpInfo.ptr)
-        val nCmdShow = startUpInfo.wShowWindow
-        nativeHeap.free(startUpInfo)
-        return@memScoped nCmdShow.convert<Int>()
-    }
 
     val className = "Main Window Class"
 
@@ -71,6 +64,13 @@ fun main() {
                 0)
         }
     } else {
+        val nCmdShow = memScoped {
+            val startUpInfo = nativeHeap.alloc<_STARTUPINFOA>()
+            GetStartupInfoA(startUpInfo.ptr)
+            val nCmdShow = startUpInfo.wShowWindow
+            nativeHeap.free(startUpInfo)
+            return@memScoped nCmdShow.convert<Int>()
+        }
         ShowWindow(hwnd, nCmdShow)
         msgLoop()
     }
