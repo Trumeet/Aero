@@ -5,19 +5,10 @@ import aero.WINDOWCOMPOSITIONATTRIBDATA
 import aero.pfnSetWindowCompositionAttribute
 import kotlinx.cinterop.*
 import platform.windows.*
+import versionhelper.IsWindows10OrGreater
+import versionhelper.IsWindowsVistaOrGreater
 
 object WinApi {
-    fun getenv(name: String): String = memScoped {
-        val buffer = nativeHeap.allocArray<CHARVar>(MAX_PATH)
-        GetEnvironmentVariableA(name,
-            buffer,
-            MAX_PATH
-        )
-        val env = buffer.toKString()
-        nativeHeap.free(buffer)
-        return@memScoped env
-    }
-
     fun msgLoop() {
         memScoped {
             val msg = nativeHeap.alloc<MSG>()
@@ -33,7 +24,7 @@ object WinApi {
         }
     }
 
-    fun setAero(hwnd: HWND?) {
+    private fun _setAero10(hwnd: HWND?) {
         val hUser = GetModuleHandleW("user32.dll") ?: return
         val setWindowCompositionAttribute = GetProcAddress(hUser,
             "SetWindowCompositionAttribute")
@@ -51,6 +42,34 @@ object WinApi {
                 cbData = accent.size.convert()
             }
             setWindowCompositionAttribute(hwnd, data.ptr)
+        }
+    }
+
+    fun setAero10(hwnd: HWND?) {
+        if (IsWindows10OrGreater() == 1) {
+            _setAero10(hwnd)
+        }
+    }
+
+    private fun _setAero7(hwnd: HWND?): Int {
+        val margins = cValue<MARGINS> {
+            cxLeftWidth = -1
+        }
+        return memScoped {
+            return@memScoped DwmExtendFrameIntoClientArea(hwnd, margins.ptr)
+        }
+    }
+
+    fun setAero7(hwnd: HWND?) {
+        if (IsWindowsVistaOrGreater() == 1 &&
+            WinCompat.DwmIsCompositionEnabled()) {
+            val result = _setAero7(hwnd)
+            if (result != 0) {
+                MessageBoxA(hwnd,
+                    "Cannot extend the aero glass (0x${result.toString(16)})",
+                    "Aero",
+                    (MB_OK or MB_ICONERROR).convert())
+            }
         }
     }
 }

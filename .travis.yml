@@ -20,7 +20,7 @@ before_deploy:
   # TODO: Add this part to the Gradle
   - export VERSION=$(git rev-list --count HEAD)
   - git tag $VERSION
-  - mv "build/bin/mingwX64/releaseExecutable/Aero.exe" "./Aero-$VERSION.exe"
+  - mv "build/bin/mingwX86/releaseExecutable/Aero.exe" "./Aero-$VERSION.exe"
 deploy:
   name: ${VERSION}
   prerelease: true

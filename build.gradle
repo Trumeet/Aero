@@ -7,23 +7,28 @@ repositories {
 }
 
 kotlin {
-    mingwX64()
+    mingwX86()
     sourceSets {
-        mingwX64Main {
-            mingwX64Main.kotlin.srcDirs += file("src/mingwMain/kotlin")
+        mingwX86Main {
+            mingwX86Main.kotlin.srcDirs += file("src/mingwMain/kotlin")
         }
     }
-    mingwX64 {
+    mingwX86 {
         binaries {
             executable {
                 entryPoint 'moe.yuuta.aero.main'
-                linkerOpts "-Wl,--subsystem,windows"
+                linkerOpts "-Wl,--subsystem,windows,-ldwmapi"
             }
         }
         compilations.main.cinterops {
             aero {
                 includeDirs {
-                    allHeaders 'src/nativeInterop/cinterop'
+                    allHeaders 'src/nativeInterop/cinterop/aero'
+                }
+            }
+            versionhelper {
+                includeDirs {
+                    allHeaders 'src/nativeInterop/cinterop/versionhelper'
                 }
             }
         }

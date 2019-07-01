@@ -1,0 +1,4 @@
+headers = versionhelper.h
+headerFilter = versionhelper.h
+package = versionhelper
+linkerOpts = -lkernel32
