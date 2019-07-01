@@ -44,6 +44,12 @@ fun main() {
     }
 
     if (hwnd == null || (forceDialogEnv == "true")) {
+        if (hwnd == null) {
+            MessageBoxA(null,
+                "The system returns an empty dialog (${GetLastError()})",
+                "Aero",
+                (MB_OK or MB_ICONERROR).convert())
+        }
         memScoped {
             // Fallback
             val dlgImpl = cValue<DLGTEMPLATE> {
